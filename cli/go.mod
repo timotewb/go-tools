@@ -1,4 +1,4 @@
-module github.com/timotewb/go-tools/cmd
+module github.com/timotewb/go-tools/cli
 
 go 1.21.4
 

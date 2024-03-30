@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	imglocorg "github.com/timotewb/go-tools/cmd/img-loc-org"
-	shared "github.com/timotewb/go-tools/cmd/shared"
+	imglocorg "github.com/timotewb/go-tools/cli/img-loc-org"
+	shared "github.com/timotewb/go-tools/cli/shared"
 )
 
 func main() {

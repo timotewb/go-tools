@@ -20,7 +20,7 @@ type RevGeoType struct {
 			District     string  `json:"district"`
 			Suburb       string  `json:"suburb"`
 			Street       string  `json:"street"`
-			Housenumber  string  `json:"housenumber"`
+			Housenumber  any     `json:"housenumber"`
 			Lon          float64 `json:"lon"`
 			Lat          float64 `json:"lat"`
 			Distance     float64 `json:"distance"`

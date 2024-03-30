@@ -34,5 +34,20 @@ func GetCotyCountry(latitude, longitude float64, apiKey string) (string, string,
 		return "", "", err
 	}
 
-	return data.Features[0].Properties.City, strings.ToUpper(data.Features[0].Properties.CountryCode), nil
+	var cityName string
+	var countryName string
+
+	if data.Features[0].Properties.City == "" {
+		cityName = "Unknown"
+	} else {
+		cityName = data.Features[0].Properties.City
+	}
+
+	if strings.ToUpper(data.Features[0].Properties.CountryCode) == "" {
+		countryName = "UNK"
+	} else {
+		countryName = strings.ToUpper(data.Features[0].Properties.CountryCode)
+	}
+
+	return cityName, countryName, nil
 }

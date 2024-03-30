@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
-	"github.com/timotewb/go-tools/cmd/img-loc-org/app"
-	"github.com/timotewb/go-tools/cmd/shared"
+	"github.com/timotewb/go-tools/cli/img-loc-org/app"
+	"github.com/timotewb/go-tools/cli/shared"
 )
 
 func App(help bool, apiKey, inDir, outDir string) error {
@@ -20,8 +21,14 @@ func App(help bool, apiKey, inDir, outDir string) error {
 
 	// Loop through each entry
 	for _, entry := range entries {
+		fmt.Println(entry.Name())
 		// Check if the entry is a file
-		if !entry.IsDir() {
+		if entry.IsDir() {
+			err = App(help, apiKey, filepath.Join(inDir, entry.Name()), outDir)
+			if err != nil {
+				return err
+			}
+		} else {
 			if shared.IsImageFile(filepath.Join(inDir, entry.Name())) {
 
 				// get lat lon from image
@@ -29,22 +36,31 @@ func App(help bool, apiKey, inDir, outDir string) error {
 				if err != nil {
 					return err
 				} else if latitude == 0 && longitude == 0 && err == nil {
-					fmt.Println("No Lat Lon data found in image file.")
+					fmt.Println("   No Lat Lon data found in image file ")
 				} else {
 
-					fmt.Printf("Latitude: %v, Longitude: %v\n", latitude, longitude)
+					time.Sleep(1 * time.Second)
 
 					// get city name and country code from coordinates
 					cityName, countryCode, err := app.GetCotyCountry(latitude, longitude, apiKey)
 					if err != nil {
 						return err
 					} else {
-						fmt.Println(cityName, countryCode)
+						newPath := filepath.Join(outDir, cityName+", "+countryCode)
+						// Use os.MkdirAll to create the directory and any necessary parents
+						err := os.MkdirAll(newPath, 0755)
+						if err != nil {
+							return err
+						}
+						// Use os.Rename to move the file
+						err = os.Rename(filepath.Join(inDir, entry.Name()), filepath.Join(newPath, entry.Name()))
+						if err != nil {
+							return err
+						}
 					}
 				}
 			}
 		}
 	}
-
 	return nil
 }
