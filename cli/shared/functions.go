@@ -24,17 +24,33 @@ func Contains(list []string, target string) bool {
 }
 
 // isImageFile checks if the given file extension is an image file extension
-func IsImageFile(file string) bool {
+func IsImageFile(file string, imageType int) bool {
 	// Extract the file extension from the file name or path
 	ext := filepath.Ext(file)
 
 	// Convert the extension to lowercase to ensure case-insensitive comparison
 	ext = strings.ToLower(ext)
 
-	// Check if the extension is in the list of image extensions
-	for _, imageExt := range ImgExt {
-		if ext == imageExt {
-			return true
+	if imageType == 0 {
+		// Check if the extension is in the list of image extensions
+		for _, imageExt := range ImgExtAll {
+			if ext == imageExt {
+				return true
+			}
+		}
+	} else if imageType == 1 {
+		// Check if the extension is in the list of image extensions
+		for _, imageExt := range ImgExtRaw {
+			if ext == imageExt {
+				return true
+			}
+		}
+	} else if imageType == 2 {
+		// Check if the extension is in the list of image extensions
+		for _, imageExt := range ImgExtComp {
+			if ext == imageExt {
+				return true
+			}
 		}
 	}
 
