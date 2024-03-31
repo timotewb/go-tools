@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/timotewb/go-tools/cli/img-loc-org/app"
@@ -29,7 +30,7 @@ func Main(help bool, apiKey, inDir, outDir string) error {
 				return fmt.Errorf("%w: Main - Main()", err)
 			}
 		} else {
-			if shared.IsImageFile(filepath.Join(inDir, entry.Name())) {
+			if shared.IsImageFile(filepath.Join(inDir, entry.Name())) && !strings.HasPrefix(entry.Name(), "._") {
 
 				// get lat lon from image
 				latitude, longitude, err := app.GetLatLon(filepath.Join(inDir, entry.Name()))
