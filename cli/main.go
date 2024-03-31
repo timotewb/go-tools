@@ -51,7 +51,7 @@ func main() {
 	validToolNames := []string{"img-loc-org"}
 	if shared.Contains(validToolNames, toolName) {
 		if toolName == "img-loc-org" {
-			err := imglocorg.App(help, apiKey, inDir, outDir)
+			err := imglocorg.Main(help, apiKey, inDir, outDir)
 			if err != nil {
 				log.Fatal(err)
 			}

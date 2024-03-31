@@ -14,24 +14,24 @@ func GetCotyCountry(latitude, longitude float64, apiKey string) (string, string,
 
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, nil)
-
 	if err != nil {
-		return "", "", err
+		return "", "", fmt.Errorf("%w: GetCotyCountry - http.NewRequest()", err)
 	}
+
 	res, err := client.Do(req)
 	if err != nil {
-		return "", "", err
+		return "", "", fmt.Errorf("%w: GetCotyCountry - client.Do()", err)
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return "", "", err
+		return "", "", fmt.Errorf("%w: GetCotyCountry - io.ReadAll()", err)
 	}
 	var data RevGeoType
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return "", "", err
+		return "", "", fmt.Errorf("%w: GetCotyCountry - json.Unmarshal()", err)
 	}
 
 	var cityName string
