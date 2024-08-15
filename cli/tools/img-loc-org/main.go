@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timotewb/go-tools/cli/img-loc-org/app"
 	"github.com/timotewb/go-tools/cli/shared"
+	"github.com/timotewb/go-tools/cli/tools/img-loc-org/app"
 )
 
 func Main(help bool, apiKey, inDir, outDir string) error {

@@ -6,8 +6,9 @@ import (
 	"log"
 	"os"
 
-	imglocorg "github.com/timotewb/go-tools/cli/img-loc-org"
 	shared "github.com/timotewb/go-tools/cli/shared"
+	imglocorg "github.com/timotewb/go-tools/cli/tools/img-loc-org"
+	"github.com/timotewb/go-tools/cli/tools/scheduler"
 )
 
 func main() {
@@ -48,13 +49,15 @@ func main() {
 	}
 
 	// Specify valid tool names
-	validToolNames := []string{"img-loc-org"}
+	validToolNames := []string{"img-loc-org", "scheduler"}
 	if shared.Contains(validToolNames, toolName) {
 		if toolName == "img-loc-org" {
 			err := imglocorg.Main(help, apiKey, inDir, outDir)
 			if err != nil {
 				log.Fatal(err)
 			}
+		} else if toolName == "scheduler" {
+			scheduler.Main()
 		}
 	} else {
 		log.Fatal("tool name not valid or no tool name provided.")
