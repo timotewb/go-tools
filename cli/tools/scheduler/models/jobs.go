@@ -1,10 +1,6 @@
 package models
 
 type Jobs []struct {
-	Minute string `json:"minute"`
-	Hour string `json:"hour"`
-	DOM string `json:"dom"`
-	Month string `json:"month"`
-	DOW string `json:"dow"`
+	CronTimeTrigger string `json:"cron_time_trigger"`
 	ExecutingCommand string `json:"executing_command"`
 }

@@ -10,7 +10,7 @@ import (
 
 // CronExpression represents a cron expression.
 type CronExpression struct {
-    Minute int
+    Minute []int
     Hour   int
     Dom    int
     Month  int
@@ -22,6 +22,14 @@ func paresCronTimeTrigger(cronStr string) (*CronExpression, error) {
     if len(parts) != 5 {
         return nil, fmt.Errorf("invalid cron format")
     }
+
+    // minute
+    var m []int
+    re := regexp.MustCompile(`^[0-5][0-9]$`)
+    if re.MatchString(parts[0]) {
+        m := 
+    }
+
     expr := &CronExpression{
         Minute: convertPart(parts[0]),
         Hour:   convertPart(parts[1]),
@@ -35,7 +43,7 @@ func paresCronTimeTrigger(cronStr string) (*CronExpression, error) {
 func convertPart(part string) int {
     switch part {
     case "*":
-        return -1 // Special handling for wildcard
+        return -9 // Special handling for wildcard
     default:
         val, err := strconv.Atoi(part)
         if err != nil {
@@ -51,14 +59,14 @@ func ShouldExecuteNow(cronStr string) bool {
 		log.Fatal(err)
 	}
 	// parse time to match crontab time trigger
-    currentTime := time.Now()
+    tn := time.Now()
 
     // Placeholder
-    if expr.Minute == -1 || expr.Hour == -1 || expr.Dom == -1 || expr.Month == -1 || expr.DOW == -1 {
+    if expr.Minute == -9 || expr.Hour == -9 || expr.Dom == -9 || expr.Month == -9 || expr.DOW == -9 {
         // If any field is "*", consider the condition met.
         return true
     }
-    if expr.Minute == currentTime.Minute() {
+    if (expr.Minute == tn.Minute() || expr.Minute == -9) && (expr.Hour == tn.Hour() || expr.Hour == -9) {
         return true
     }
 
