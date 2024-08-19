@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -23,21 +24,26 @@ func paresCronTimeTrigger(cronStr string) (*CronExpression, error) {
         return nil, fmt.Errorf("invalid cron format")
     }
 
-    // minute
-    var m []int
-    re := regexp.MustCompile(`^[0-5][0-9]$`)
-    if re.MatchString(parts[0]) {
-        m := 
-    }
-
     expr := &CronExpression{
-        Minute: convertPart(parts[0]),
+        Minute: getMin(parts[0]),
         Hour:   convertPart(parts[1]),
         Dom:    convertPart(parts[2]),
         Month:  convertPart(parts[3]),
         DOW:    convertPart(parts[4]),
     }
     return expr, nil
+}
+
+func getMin(part string) []int{
+    re := regexp.MustCompile(`^[0-5][0-9]$`)
+    if re.MatchString(part) {
+        val, _ := strconv.Atoi(part)
+        return []int{val}
+    } else if part == "*" {
+        return make([]int, 59)
+    }
+    // error
+    return []int{-1}
 }
 
 func convertPart(part string) int {
