@@ -3,8 +3,6 @@ package app
 import (
 	"fmt"
 	"log"
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -26,53 +24,36 @@ func paresCronTimeTrigger(cronStr string) (*CronExpression, error) {
 
     expr := &CronExpression{
         Minute: getMin(parts[0]),
-        Hour:   convertPart(parts[1]),
-        Dom:    convertPart(parts[2]),
-        Month:  convertPart(parts[3]),
-        DOW:    convertPart(parts[4]),
     }
     return expr, nil
 }
 
-func getMin(part string) []int{
-    re := regexp.MustCompile(`^[0-5][0-9]$`)
-    if re.MatchString(part) {
-        val, _ := strconv.Atoi(part)
-        return []int{val}
-    } else if part == "*" {
-        return make([]int, 59)
-    }
-    // error
-    return []int{-1}
-}
 
-func convertPart(part string) int {
-    switch part {
-    case "*":
-        return -9 // Special handling for wildcard
-    default:
-        val, err := strconv.Atoi(part)
-        if err != nil {
-            return -1 // Error handling
+
+func checkIntInIntArray(arr []int, target int) bool {
+    for _, value := range arr {
+        if value == target {
+            return true
         }
-        return val
     }
+    return false
 }
 
 func ShouldExecuteNow(cronStr string) bool {
 	expr, err := paresCronTimeTrigger(cronStr)
+    fmt.Printf(" - expr: %v",expr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// parse time to match crontab time trigger
     tn := time.Now()
 
-    // Placeholder
-    if expr.Minute == -9 || expr.Hour == -9 || expr.Dom == -9 || expr.Month == -9 || expr.DOW == -9 {
-        // If any field is "*", consider the condition met.
-        return true
+    // check for any errors
+    if checkIntInIntArray(expr.Minute, -1) {
+        log.Print("Error: invalid value passed in time trigger. Please check input time trigger format.")
+        return false
     }
-    if (expr.Minute == tn.Minute() || expr.Minute == -9) && (expr.Hour == tn.Hour() || expr.Hour == -9) {
+    if checkIntInIntArray(expr.Minute, tn.Minute()) {
         return true
     }
 
