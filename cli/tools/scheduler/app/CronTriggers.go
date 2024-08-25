@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -188,6 +189,9 @@ func removeDuplicates(arr []int) []int {
             uniqueArr = append(uniqueArr, num)
         }
     }
+	
+    // Sort the array in ascending order
+    sort.Ints(uniqueArr)
     
     return uniqueArr
 }
