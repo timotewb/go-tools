@@ -16,7 +16,7 @@ func Main() {
 	}
 
 	for _, job := range jobs{
-		fmt.Printf("%v\n-Trigger Now: %v\n\n", job.ExecutingCommand,app.ShouldExecuteNow(job.CronTimeTrigger))
+		fmt.Printf("%v\n-Trigger Now: %v\n\n", job.Body,app.ShouldExecuteNow(job.CronTimeTrigger))
 	}
 
 }

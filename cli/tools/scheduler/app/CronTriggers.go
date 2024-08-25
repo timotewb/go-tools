@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 	"strconv"
@@ -14,7 +15,7 @@ func getMin(part string) []int{
 	min := 0
 	max := 59
 	// check if start and return
-	if part == "*" {
+	if strings.Contains(part, "*") {
         result := make([]int, max)
 		for i := range result {
             result[i] = min+i
@@ -27,12 +28,16 @@ func getMin(part string) []int{
 	//----------------------------------------------------------------------------------------
 	var result []int
 	re := regexp.MustCompile(`^([0-9]|0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])$`)
+
+	//----------------------------------------------------------------------------------------
+	// split values (e.g. 1,4,5) into parts - comma is priority 2 (after space)
+	//----------------------------------------------------------------------------------------
 	parts := strings.Split(part, ",")
 	for _, p := range parts{
-		//----------------------------------------------------------------------------------------
-		// split range (e.g. 1-4) into pieces
-		//----------------------------------------------------------------------------------------
-		if strings.Contains(p, "-"){
+		if strings.Contains(p, "-") {
+			//----------------------------------------------------------------------------------------
+			// split range (e.g. 1-4) into pieces - hyphen is priority 3
+			//----------------------------------------------------------------------------------------
 			pieces := strings.Split(p, "-")
 			if len(pieces) != 2 {
 				log.Printf("Error: length of '%v' not equal to two.", pieces)
@@ -59,23 +64,46 @@ func getMin(part string) []int{
 						return []int{-1}
 					}
 				}
-				return result
 			}
-		}
-		//----------------------------------------------------------------------------------------
-		// check string for value match
-		//----------------------------------------------------------------------------------------
-		if re.MatchString(p) {
-			val, _ := strconv.Atoi(p)
-			if val >=min && val <= max {
-				result = append(result, val)
+		} else if strings.Contains(p, "/") {
+			//----------------------------------------------------------------------------------------
+			// split range (e.g. 1-4) into pieces - slash is priority 3
+			//----------------------------------------------------------------------------------------
+			pieces := strings.Split(p, "/")
+			fmt.Printf(" - Start: %v\n", pieces[0])
+			fmt.Printf(" - Increment: %v\n", pieces[1])
+			i, err := strconv.Atoi(pieces[0])
+			if err != nil{
+				log.Printf("Error: could not convert '%v' to integer", pieces[0])
+				return []int{-1}
 			}
+			inc, err := strconv.Atoi(pieces[1])
+			if err != nil{
+				log.Printf("Error: could not convert '%v' to integer", pieces[0])
+				return []int{-1}
+			}
+			result = append(result, i)
+			for i + inc < max {
+				i = i + inc
+				result = append(result, i)
+			}
+
 		} else {
-			log.Printf("Error: could not match '%v' to required format", p)
-			return []int{-1}
+			//----------------------------------------------------------------------------------------
+			// check string for value match
+			//----------------------------------------------------------------------------------------
+			if re.MatchString(p) {
+				val, _ := strconv.Atoi(p)
+				if val >=min && val <= max {
+					result = append(result, val)
+				}
+			} else {
+				log.Printf("Error: could not match '%v' to required format", p)
+				return []int{-1}
+			}
 		}
 	}
-	return result
+	return removeDuplicates(result)
 }
 
 func getHour(part string) []int{
@@ -148,4 +176,18 @@ func getDOW(part string) []int{
     }
     // error
     return []int{-1}
+}
+
+func removeDuplicates(arr []int) []int {
+    seen := map[int]bool{}
+    uniqueArr := make([]int, 0)
+    
+    for _, num := range arr {
+        if !seen[num] {
+            seen[num] = true
+            uniqueArr = append(uniqueArr, num)
+        }
+    }
+    
+    return uniqueArr
 }
