@@ -11,6 +11,31 @@ import (
 
 //ref: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 
+// package main
+
+// import "fmt"
+
+// type NumberTrigger struct{}
+
+// type GetNum struct {
+// 	NumberTrigger *NumberTrigger
+// }
+
+// func (s *NumberTrigger) GetNumberTrigger(min, max int) {
+// 	fmt.Printf("Min: %v, Max: %v", min, max)
+// }
+
+// func (g *GetNum) GetMin() {
+// 	g.NumberTrigger.GetNumberTrigger(1, 5)
+// }
+
+// func main() {
+// 	t1 := GetNum{}
+// 	t1.GetMin()
+// }
+
+
+
 func getMin(part string) []int{
 
 	min := 0
