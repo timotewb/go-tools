@@ -11,35 +11,33 @@ import (
 
 //ref: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 
-// package main
+// "parent" type to inject into the called struct
+type NumberTrigger struct{}
 
-// import "fmt"
+// called struct
+type CrontTrigger struct{
+	NumberTrigger *NumberTrigger
+}
 
-// type NumberTrigger struct{}
+// the "child" functions
+func (c *CrontTrigger) MinTrigger(part string) []int{
+	return c.NumberTrigger.GetTriggers(part, 0,59)
+}
+func (c *CrontTrigger) HourTrigger(part string) []int{
+	return c.NumberTrigger.GetTriggers(part, 0,23)
+}
+func (c *CrontTrigger) DOMTrigger(part string) []int{
+	return c.NumberTrigger.GetTriggers(part, 1,31)
+}
+func (c *CrontTrigger) MonthTrigger(part string) []int{
+	return c.NumberTrigger.GetTriggers(part, 1,12)
+}
+func (c *CrontTrigger) DOWTrigger(part string) []int{
+	return c.NumberTrigger.GetTriggers(part, 1,7)
+}
 
-// type GetNum struct {
-// 	NumberTrigger *NumberTrigger
-// }
+func (n * NumberTrigger) GetTriggers(part string, min, max int) []int{
 
-// func (s *NumberTrigger) GetNumberTrigger(min, max int) {
-// 	fmt.Printf("Min: %v, Max: %v", min, max)
-// }
-
-// func (g *GetNum) GetMin() {
-// 	g.NumberTrigger.GetNumberTrigger(1, 5)
-// }
-
-// func main() {
-// 	t1 := GetNum{}
-// 	t1.GetMin()
-// }
-
-
-
-func getMin(part string) []int{
-
-	min := 0
-	max := 59
 	// check if start and return
 	if strings.Contains(part, "*") {
         result := make([]int, max)
@@ -132,77 +130,6 @@ func getMin(part string) []int{
 	return removeDuplicates(result)
 }
 
-func getHour(part string) []int{
-
-	min := 0
-	max := 59
-	// check if start and return
-	if part == "*" {
-        result := make([]int, max)
-		for i := range result {
-            result[i] = min+i
-        }
-		return result
-    }
-
-	// process each value
-	var result []int
-	re := regexp.MustCompile(`^([0-9]|0[0-9]|1[0-9]|2[0-3])$`)
-	parts := strings.Split(part, ",")
-	for _, p := range parts{
-		if re.MatchString(p) {
-			val, _ := strconv.Atoi(p)
-			if val >=min && val <= max {
-				result = append(result, val)
-			}
-		} else {
-			return []int{-1}
-		}
-	}
-	return result
-}
-
-func getDOM(part string) []int{
-    re := regexp.MustCompile(`^([1-9]|0[1-9]|1[0-9]|2[0-9]|3[0-1])$`)
-    if re.MatchString(part) {
-        val, _ := strconv.Atoi(part)
-		if val >=0 && val < 31 {
-			return []int{val}
-		}
-    } else if part == "*" {
-        return make([]int, 30)
-    }
-    // error
-    return []int{-1}
-}
-
-func getMonth(part string) []int{
-    re := regexp.MustCompile(`^([1-9]|0[1-9]|1[0-2])$`)
-    if re.MatchString(part) {
-        val, _ := strconv.Atoi(part)
-		if val >=0 && val < 12 {
-			return []int{val}
-		}
-    } else if part == "*" {
-        return make([]int, 11)
-    }
-    // error
-    return []int{-1}
-}
-
-func getDOW(part string) []int{
-    re := regexp.MustCompile(`^([1-7]|0[1-7]|)$`)
-    if re.MatchString(part) {
-        val, _ := strconv.Atoi(part)
-		if val >=0 && val < 7 {
-			return []int{val}
-		}
-    } else if part == "*" {
-        return make([]int, 6)
-    }
-    // error
-    return []int{-1}
-}
 
 func removeDuplicates(arr []int) []int {
     seen := map[int]bool{}
