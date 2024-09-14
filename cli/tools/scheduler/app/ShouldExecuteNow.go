@@ -26,9 +26,9 @@ func paresCronTimeTrigger(cronStr string) (*CronExpression, error) {
     expr := &CronExpression{
         Minute: c.MinTrigger(parts[0]),
         Hour: c.HourTrigger(parts[1]), 
-        DOM: c.HourTrigger(parts[1]), 
-        Month: c.HourTrigger(parts[1]), 
-        DOW: c.HourTrigger(parts[1]), 
+        DOM: c.HourTrigger(parts[2]), 
+        Month: c.HourTrigger(parts[3]), 
+        DOW: c.HourTrigger(parts[4]), 
     }
     return expr, nil
 }
