@@ -46,7 +46,6 @@ func checkIntInIntArray(arr []int, target int) bool {
 
 func ShouldExecuteNow(cronStr string) bool {
 	expr, err := paresCronTimeTrigger(cronStr)
-    fmt.Printf(" - expr: %v",expr)
 	if err != nil {
 		log.Fatal(err)
 	}

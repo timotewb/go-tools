@@ -15,9 +15,14 @@ func Main() {
 		return
 	}
 
+	app.ExecuteCommand("echo timmy!")
+
 	for _, job := range jobs{
-		fmt.Printf("%v \n-Trigger Now: %v\n\n", job.Body, app.ShouldExecuteNow(job.CronTimeTrigger))
-		fmt.Printf("")
+		fmt.Printf("-Trigger Now: %v\n", app.ShouldExecuteNow(job.CronTimeTrigger))
+		fmt.Printf("-Command: %v\n\n", job.Command)
+		if app.ShouldExecuteNow(job.CronTimeTrigger){
+			go app.ExecuteCommand(job.Command)
+		}
 	}
 
 }
